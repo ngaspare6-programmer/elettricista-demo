@@ -16,7 +16,8 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body { background: var(--pagina); color: var(--testo); font-family: Inter, sans-serif; font-size: 15px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
-  button { font-family: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  button, input { font-family: inherit; color: inherit; }
+  button { background: none; border: 0; cursor: pointer; }
   .num { font-family: "Space Grotesk", sans-serif; font-variant-numeric: tabular-nums; }
   .sim { width: 24px; height: 24px; flex: none; }
 
@@ -25,47 +26,31 @@
   @media (min-width: 600px) { body { padding: 24px 0; } .app { height: calc(100vh - 48px); border-radius: 24px; box-shadow: 0 18px 40px rgba(0,0,0,.12); } }
   .schermo { height: 100%; display: flex; flex-direction: column; }
   .schermo[hidden] { display: none; }
+  .corpo { flex: 1; overflow-y: auto; }
 
-  .passi { display: flex; gap: 6px; padding: 6px 18px 0; font-size: 12px; font-weight: 600; color: var(--sec); }
+  /* barra in alto, uguale nelle due schermate */
+  .barra { display: flex; align-items: center; gap: 4px; padding: 14px 14px 4px 18px; flex: none; }
+  .barra h1 { font-family: "Space Grotesk", sans-serif; font-size: 18px; font-weight: 700; flex: 1; }
+  .barra button { font-size: 14px; min-height: 44px; padding: 0 8px; color: var(--sec); }
+  .barra .prezzi { color: var(--verde); font-weight: 600; }
+
+  .passi { display: flex; gap: 6px; padding: 6px 18px 0; font-size: 12px; font-weight: 600; color: var(--sec); flex: none; }
   .passi span { flex: 1; border-top: 3px solid var(--linea); padding-top: 6px; }
   .passi .on { border-color: var(--verde); color: var(--testo); }
   .passi .fatto { border-color: var(--verde); }
 
-  /* ---------- Schermata C: la casa ---------- */
-  .barra { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 4px; }
-  .barra h1 { font-family: "Space Grotesk", sans-serif; font-size: 18px; font-weight: 700; }
-  .barra .esci { font-size: 14px; color: var(--sec); min-height: 44px; padding: 0 4px; }
-
-  .case { display: flex; gap: 8px; padding: 16px 14px 0; }
-  .casa { flex: 1; min-height: 56px; border: 1.5px solid var(--linea); border-radius: 12px; font-weight: 600; font-size: 15px; transition: background .15s, border-color .15s; }
-  .casa[aria-pressed="true"] { border: 2px solid var(--verde); background: var(--verde-tenue); color: var(--verde); }
-
-  .numero { text-align: center; padding: 28px 0 20px; }
-  .numero .tot { font-size: 60px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
-  .numero small { display: block; color: var(--sec); font-size: 14px; margin-top: 10px; }
-
-  .corpo { flex: 1; overflow-y: auto; }
-  .titoletto { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--sec); padding: 0 18px 4px; }
-  .righe { padding: 0 18px 12px; }
-  .riga { display: flex; align-items: center; min-height: 52px; border-bottom: 1px solid var(--linea); }
-  .riga .nome { flex: 1; font-size: 16px; }
-  .riga .p { color: var(--sec); font-size: 14px; margin-right: 4px; }
-  .riga .cambia { color: var(--verde); font-weight: 600; font-size: 14px; min-height: 48px; padding: 0 0 0 14px; }
-
-  .piede { padding: 12px 16px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--linea); background: var(--bg); }
-  .avviso { font-size: 13px; color: var(--sec); text-align: center; margin-bottom: 10px; }
+  .piede { padding: 12px 16px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--linea); background: var(--bg); flex: none; }
   .btn { width: 100%; min-height: 56px; border-radius: 12px; background: var(--verde); color: #fff; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-2 { width: 100%; min-height: 52px; border: 1.5px solid var(--linea); border-radius: 14px; background: var(--bg); font-weight: 600; font-size: 16px; }
   .link { display: block; width: 100%; min-height: 44px; margin-top: 4px; font-size: 14px; color: var(--sec); }
   .link b { color: var(--verde); }
 
-  /* ---------- Schermata B: i ritocchi ---------- */
-  .generale { background: var(--graf); color: #ECEDEF; padding: 12px 18px 16px; flex: none; }
-  .gen-riga { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #A9ACB4; }
-  .gen-riga button { color: #ECEDEF; font-size: 14px; font-weight: 600; min-height: 44px; padding-right: 8px; }
-  .gen-tot { font-size: 40px; font-weight: 700; line-height: 1.1; color: #fff; }
-  .gen-sotto { font-size: 13px; color: var(--verde-chiaro); }
+  /* ---------- 1 · Ritocchi ---------- */
+  .totale-s { padding: 14px 18px 12px; flex: none; }
+  .totale-s .tot { font-size: 40px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+  .totale-s small { display: block; color: var(--sec); font-size: 13px; }
 
-  .schede { display: flex; gap: 2px; padding: 6px 8px 0; border-bottom: 1px solid var(--linea); overflow-x: auto; scrollbar-width: none; flex: none; }
+  .schede { display: flex; gap: 2px; padding: 0 8px; border-bottom: 1px solid var(--linea); overflow-x: auto; scrollbar-width: none; flex: none; }
   .schede::-webkit-scrollbar { display: none; }
   .scheda { padding: 12px 12px 11px; min-height: 48px; font-size: 14px; font-weight: 600; color: var(--sec); white-space: nowrap; border-bottom: 3px solid transparent; }
   .scheda.on { color: var(--testo); border-color: var(--verde); }
@@ -81,7 +66,6 @@
   .tasto:disabled { border-color: var(--linea); color: var(--spento); cursor: default; }
   .q { width: 40px; text-align: center; font-size: 26px; font-weight: 700; flex: none; }
   .q.zero { color: var(--spento); }
-  .q.largo { width: 64px; font-size: 22px; }
   .q.batte { animation: batte .25s; }
   @keyframes batte { 50% { transform: scale(1.25); color: var(--verde); } }
   .togli { display: block; margin: 14px auto 0; min-height: 44px; padding: 0 12px; font-size: 14px; color: var(--sec); }
@@ -89,16 +73,48 @@
   .sub { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; margin-bottom: 10px; }
   .sub b { font-size: 18px; }
 
-  /* foglio per scegliere la nuova stanza */
-  .velo { position: absolute; inset: 0; background: rgba(18,19,22,.45); display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  /* ---------- 2 · Casa ---------- */
+  .case { display: flex; gap: 8px; padding: 16px 14px 0; flex: none; }
+  .casa { flex: 1; min-height: 56px; border: 1.5px solid var(--linea); border-radius: 12px; font-weight: 600; font-size: 15px; transition: background .15s, border-color .15s; }
+  .casa[aria-pressed="true"] { border: 2px solid var(--verde); background: var(--verde-tenue); color: var(--verde); }
+
+  .numero { text-align: center; padding: 28px 0 20px; flex: none; }
+  .numero .tot { font-size: 60px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+  .numero small { display: block; color: var(--sec); font-size: 14px; margin-top: 10px; }
+
+  .righe { padding: 0 18px 12px; }
+  .riga { display: flex; align-items: center; min-height: 52px; border-bottom: 1px solid var(--linea); }
+  .riga .nome { flex: 1; font-size: 16px; }
+  .riga .p { color: var(--sec); font-size: 14px; margin-right: 4px; }
+  .riga .cambia { color: var(--verde); font-weight: 600; font-size: 14px; min-height: 48px; padding: 0 0 0 14px; }
+
+  /* fogli dal basso: prezzi, nuova stanza, anteprima WhatsApp */
+  .velo { position: absolute; inset: 0; background: rgba(18,19,22,.45); display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 40; }
   .velo.on { opacity: 1; pointer-events: auto; }
-  .foglio { background: var(--bg); width: 100%; border-radius: 20px 20px 0 0; padding: 18px 16px calc(20px + env(safe-area-inset-bottom)); transform: translateY(30px); transition: transform .2s; }
+  .foglio { background: var(--bg); width: 100%; max-height: 92%; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 18px 16px calc(20px + env(safe-area-inset-bottom)); transform: translateY(30px); transition: transform .2s; }
   .velo.on .foglio { transform: none; }
-  .foglio h2 { font-family: "Space Grotesk", sans-serif; font-size: 18px; margin-bottom: 12px; }
-  .scelte { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .foglio h2 { font-family: "Space Grotesk", sans-serif; font-size: 18px; margin-bottom: 4px; }
+  .foglio .spiega { font-size: 13px; color: var(--sec); margin-bottom: 10px; }
+  .scelte { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
   .scelte button { min-height: 56px; border: 1.5px solid var(--linea); border-radius: 12px; font-weight: 600; }
 
-  .toast { position: fixed; left: 50%; bottom: 120px; transform: translate(-50%, 20px); background: var(--graf); color: #fff; font-size: 14px; padding: 12px 16px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; max-width: 340px; text-align: center; }
+  /* listino prezzi */
+  .prezzo { display: flex; align-items: center; gap: 10px; min-height: 60px; border-bottom: 1px solid var(--linea); }
+  .prezzo label { flex: 1; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+  .campo { display: flex; align-items: center; border: 1.5px solid var(--linea); border-radius: 10px; height: 48px; padding: 0 10px; width: 120px; background: var(--fondo); }
+  .campo:focus-within { border-color: var(--verde); background: var(--bg); }
+  .campo span { color: var(--sec); }
+  .campo input { border: 0; background: none; width: 100%; height: 100%; text-align: right; font-family: "Space Grotesk", sans-serif; font-size: 20px; font-weight: 600; outline: none; }
+  .foglio .btn { margin-top: 14px; }
+
+  /* anteprima WhatsApp: nella demo non parte nessun messaggio */
+  #veloWA { z-index: 50; }
+  .chat { background: #EFEAE2; border-radius: 14px; padding: 14px 12px; max-height: 52vh; overflow-y: auto; margin-top: 8px; }
+  .bolla { background: #D9FDD3; border-radius: 10px 10px 2px 10px; padding: 9px 11px 6px; margin-left: 18px; font-size: 14.5px; line-height: 1.45; color: #111b21; white-space: pre-wrap; box-shadow: 0 1px 0 rgba(0,0,0,.08); }
+  .bolla .ora { display: block; text-align: right; font-size: 11px; color: #667781; margin-top: 2px; }
+  .nota-demo { text-align: center; font-size: 13px; color: var(--sec); margin: 12px 0 10px; }
+
+  .toast { position: fixed; left: 50%; bottom: 120px; transform: translate(-50%, 20px); background: var(--graf); color: #fff; font-size: 14px; padding: 12px 16px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; max-width: 340px; text-align: center; z-index: 60; }
   .toast.on { opacity: 1; transform: translate(-50%, 0); }
 </style>
 </head>
@@ -115,39 +131,17 @@
 
 <div class="app">
 
-  <!-- ===== C · la casa ===== -->
-  <section class="schermo" id="schermoC">
+  <!-- ===== 1 · Ritocchi: si conta stanza per stanza ===== -->
+  <section class="schermo" id="schermoS">
     <div class="barra">
       <h1>Nuovo preventivo</h1>
-      <button class="esci" id="ricomincia">Ricomincia</button>
+      <button class="prezzi" data-prezzi>Prezzi</button>
+      <button data-ricomincia>Ricomincia</button>
     </div>
-    <div class="passi" id="passiC"></div>
-
-    <div class="case" id="case" role="group" aria-label="Tipo di casa"></div>
-
-    <div class="numero">
-      <div class="tot num" id="totaleC">€ 0</div>
-      <small id="sintesi"></small>
-    </div>
-
-    <div class="corpo">
-      <div class="titoletto" id="titoletto"></div>
-      <div class="righe" id="righe"></div>
-    </div>
-
-    <div class="piede">
-      <div class="avviso" id="avviso">Numeri "di solito": è una stima da confermare.</div>
-      <button class="btn" id="whatsapp">Manda su WhatsApp</button>
-      <button class="link" id="ritocca">oppure <b>ritocca le stanze</b></button>
-    </div>
-  </section>
-
-  <!-- ===== B · i ritocchi ===== -->
-  <section class="schermo" id="schermoB" hidden>
-    <div class="generale">
-      <div class="gen-riga"><button id="indietro">← <span id="nomeCasa"></span></button><span>IVA esclusa</span></div>
-      <div class="gen-tot num" id="totaleB">€ 0</div>
-      <div class="gen-sotto" id="genSotto"></div>
+    <div class="passi" id="passiS"></div>
+    <div class="totale-s">
+      <div class="tot num" id="totaleS">€ 0</div>
+      <small id="sottoS"></small>
     </div>
     <div class="schede" id="schede"></div>
     <div class="corpo"><div class="voci" id="voci"></div></div>
@@ -156,6 +150,47 @@
       <button class="btn" id="avanti"></button>
     </div>
   </section>
+
+  <!-- ===== 2 · Casa: il totale e l'invio ===== -->
+  <section class="schermo" id="schermoC" hidden>
+    <div class="barra">
+      <h1>Nuovo preventivo</h1>
+      <button class="prezzi" data-prezzi>Prezzi</button>
+      <button data-ricomincia>Ricomincia</button>
+    </div>
+    <div class="passi" id="passiC"></div>
+    <div class="case" id="case" role="group" aria-label="Tipo di casa"></div>
+    <div class="numero">
+      <div class="tot num" id="totaleC">€ 0</div>
+      <small id="sintesi"></small>
+    </div>
+    <div class="corpo"><div class="righe" id="righe"></div></div>
+    <div class="piede">
+      <button class="btn" id="ritocca">Ritocca le stanze</button>
+      <button class="link" id="whatsapp">oppure <b>manda su WhatsApp</b></button>
+    </div>
+  </section>
+
+  <!-- foglio "prezzi" -->
+  <div class="velo" id="veloP">
+    <div class="foglio">
+      <h2>I tuoi prezzi</h2>
+      <p class="spiega">IVA esclusa. Valgono per tutte le stanze di questo preventivo.</p>
+      <div id="listaPrezzi"></div>
+      <button class="btn" id="salvaP">Salva prezzi</button>
+      <button class="link" id="annullaP">Annulla</button>
+    </div>
+  </div>
+
+  <!-- foglio "anteprima WhatsApp" -->
+  <div class="velo" id="veloWA">
+    <div class="foglio">
+      <h2>Ecco cosa riceverebbe il tuo cliente</h2>
+      <div class="chat"><div class="bolla" id="bollaWA"></div></div>
+      <p class="nota-demo">Nella demo non parte nessun messaggio.</p>
+      <button class="btn-2" id="chiudiWA">Chiudi</button>
+    </div>
+  </div>
 
   <!-- foglio "nuova stanza" -->
   <div class="velo" id="velo">
@@ -168,53 +203,37 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- Listino (prezzi indicativi, solo per la demo) ----
+// ---- Listino: prezzi indicativi, si cambiano dal tasto "Prezzi" ----
+const PREZZI = { luce: 60, presa: 55, interr: 45, linea: 90, quadro: 320, dico: 150 };
 const VOCI = [
-  { k: "luce",   nome: "Punti luce",     prezzo: 60, unita: "l'uno",  sim: "luce" },
-  { k: "presa",  nome: "Prese",          prezzo: 55, unita: "l'una",  sim: "presa" },
-  { k: "interr", nome: "Interruttori",   prezzo: 45, unita: "l'uno",  sim: "interr" },
-  { k: "linea",  nome: "Linea dedicata", prezzo: 90, unita: "forno, clima…", sim: "linea" },
+  { k: "luce",   nome: "Punti luce",     uno: "Punto luce",     sim: "luce" },
+  { k: "presa",  nome: "Prese",          uno: "Presa",          sim: "presa" },
+  { k: "interr", nome: "Interruttori",   uno: "Interruttore",   sim: "interr" },
+  { k: "linea",  nome: "Linea dedicata", uno: "Linea dedicata", sim: "linea", nota: "forno, clima…" },
 ];
-const DICO = 150;
-const NUOVE = ["Corridoio", "Studio", "Ripostiglio", "Lavanderia", "Garage", "Esterno"];
+const FISSI = [
+  { k: "quadro", nome: "Quadro elettrico",            uno: "Quadro elettrico", sim: "quadro" },
+  { k: "dico",   nome: "Dichiarazione di conformità", uno: "Conformità (DiCo)", sim: "dico", nota: "DM 37/08" },
+];
+const CASE = { bilocale: "Bilocale", trilocale: "Trilocale", villetta: "Villetta" };
+const NUOVE = ["Cucina", "Camera", "Cameretta", "Bagno", "Corridoio", "Studio", "Ripostiglio", "Esterno"];
 
-// ---- Case "di solito": stanze con i punti ----
-const CASE = {
-  bilocale: { nome: "Bilocale", art: "un bilocale", quadro: 280, stanze: [
-    { nome: "Soggiorno-cucina", luce: 2, presa: 6, interr: 1, linea: 1 },
-    { nome: "Camera",           luce: 1, presa: 4, interr: 2, linea: 0 },
-    { nome: "Bagno",            luce: 2, presa: 2, interr: 0, linea: 0 },
-  ]},
-  trilocale: { nome: "Trilocale", art: "un trilocale", quadro: 320, stanze: [
-    { nome: "Soggiorno", luce: 2, presa: 5, interr: 2, linea: 0 },
-    { nome: "Cucina",    luce: 2, presa: 6, interr: 0, linea: 1 },
-    { nome: "Camera",    luce: 1, presa: 4, interr: 2, linea: 0 },
-    { nome: "Bagno",     luce: 2, presa: 2, interr: 0, linea: 0 },
-  ]},
-  villetta: { nome: "Villetta", art: "una villetta", quadro: 450, stanze: [
-    { nome: "Soggiorno", luce: 3, presa: 6, interr: 3, linea: 0 },
-    { nome: "Cucina",    luce: 2, presa: 6, interr: 0, linea: 2 },
-    { nome: "Camera",    luce: 1, presa: 4, interr: 2, linea: 0 },
-    { nome: "Cameretta", luce: 1, presa: 4, interr: 2, linea: 0 },
-    { nome: "Bagno",     luce: 2, presa: 2, interr: 0, linea: 0 },
-    { nome: "Bagno 2",   luce: 1, presa: 2, interr: 0, linea: 0 },
-    { nome: "Esterno",   luce: 3, presa: 2, interr: 1, linea: 0 },
-  ]},
-};
-
-// ---- Stato del preventivo: C lo crea, B lo ritocca ----
+// ---- Stato del preventivo: si parte dal solo Soggiorno, tutto a zero ----
 let stato = null;
-let aperta = 0;            // scheda aperta in B: indice della stanza, oppure "casa"
-function nuovo(tipo) {
-  const c = CASE[tipo];
-  stato = { tipo, quadro: c.quadro, dico: true, ritoccato: false, stanze: c.stanze.map(s => ({ ...s })) };
+let aperta = 0;            // scheda aperta nei ritocchi: indice della stanza, oppure "casa"
+const vuota = nome => ({ nome, luce: 0, presa: 0, interr: 0, linea: 0 });
+function nuovo() {
+  stato = { tipo: "trilocale", quadro: 0, dico: 0, toccato: false, stanze: [vuota("Soggiorno")] };
+  aperta = 0;
 }
 
 const punti = s => VOCI.reduce((t, v) => t + s[v.k], 0);
-const costo = s => VOCI.reduce((t, v) => t + s[v.k] * v.prezzo, 0);
-const fissi = () => stato.quadro + (stato.dico ? DICO : 0);
+const costo = s => VOCI.reduce((t, v) => t + s[v.k] * PREZZI[v.k], 0);
+const fissi = () => stato.quadro * PREZZI.quadro + stato.dico * PREZZI.dico;
 const totale = () => stato.stanze.reduce((t, s) => t + costo(s), 0) + fissi();
 const puntiTot = () => stato.stanze.reduce((t, s) => t + punti(s), 0);
+const stanzeTxt = n => n === 1 ? "1 stanza" : `${n} stanze`;
+const puntiTxt = n => n === 1 ? "1 punto" : `${n} punti`;
 // punto delle migliaia sempre (il browser in italiano lo salta sotto i 10.000)
 const euro = n => "€ " + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
@@ -224,6 +243,7 @@ function animaTotale(fine, id) {
   cancelAnimationFrame(anim);
   const el = document.getElementById(id);
   const inizio = mostrato, t0 = performance.now(), durata = 350;
+  if (inizio === fine) { el.textContent = euro(fine); return; }
   const passo = t => {
     const k = Math.min(1, (t - t0) / durata), e = 1 - Math.pow(1 - k, 3);
     mostrato = Math.round(inizio + (fine - inizio) * e);
@@ -234,36 +254,15 @@ function animaTotale(fine, id) {
 }
 
 function passi(n) {
-  return ["1 Casa", "2 Ritocchi", "3 Invio"].map((t, i) =>
+  return ["1 Ritocchi", "2 Casa"].map((t, i) =>
     `<span class="${i + 1 === n ? "on" : i + 1 < n ? "fatto" : ""}">${t}</span>`).join("");
 }
 
-// ---------- C ----------
-function disegnaC() {
-  const c = CASE[stato.tipo];
-  document.getElementById("passiC").innerHTML = passi(stato.ritoccato ? 3 : 1);
-  document.getElementById("case").innerHTML = Object.entries(CASE).map(([k, v]) =>
-    `<button class="casa" data-tipo="${k}" aria-pressed="${k === stato.tipo}">${v.nome}</button>`).join("");
-
-  animaTotale(totale(), "totaleC");
-  document.getElementById("sintesi").textContent = `${puntiTot()} punti · ${stato.stanze.length} stanze · IVA esclusa`;
-  document.getElementById("titoletto").textContent = stato.ritoccato ? "Le stanze, ritoccate" : `Di solito, in ${c.art}`;
-
-  document.getElementById("righe").innerHTML =
-    stato.stanze.map((s, i) => `<div class="riga"><span class="nome">${s.nome}</span><span class="p">${punti(s)} punti</span><button class="cambia" data-stanza="${i}">Cambia</button></div>`).join("") +
-    `<div class="riga"><span class="nome">${stato.dico ? "Quadro + conformità" : "Quadro elettrico"}</span><span class="p num">${euro(fissi())}</span><button class="cambia" data-stanza="casa">Cambia</button></div>`;
-
-  document.getElementById("avviso").style.display = stato.ritoccato ? "none" : "";
-}
-
-// ---------- B ----------
-function nomeScheda(i) { return i === "casa" ? "Tutta la casa" : stato.stanze[i].nome; }
-
-function disegnaB(scorri) {
-  document.getElementById("nomeCasa").textContent = CASE[stato.tipo].nome;
-  animaTotale(totale(), "totaleB");
-  document.getElementById("genSotto").textContent =
-    `${puntiTot()} punti · ${stato.stanze.length} stanze · ${stato.dico ? "quadro e DiCo" : "quadro"} inclusi`;
+// ---------- 1 · Ritocchi ----------
+function disegnaS(scorri) {
+  document.getElementById("passiS").innerHTML = passi(1);
+  animaTotale(totale(), "totaleS");
+  document.getElementById("sottoS").textContent = `${puntiTxt(puntiTot())} · ${stanzeTxt(stato.stanze.length)} · IVA esclusa`;
 
   // schede: le stanze, poi "Tutta la casa", poi +
   const schede = document.getElementById("schede");
@@ -275,55 +274,62 @@ function disegnaB(scorri) {
 
   const voci = document.getElementById("voci");
   if (aperta === "casa") {
-    // stesse righe delle stanze: chi ha imparato i tasti non deve imparare altro
-    voci.innerHTML =
-      riga("quadro", "Quadro elettrico", "€ 10 a tocco", "quadro", "€", stato.quadro, stato.quadro <= 100) +
-      riga("dico", "Dichiarazione di conformità", euro(DICO) + " · DM 37/08", "dico", "", stato.dico ? 1 : 0, !stato.dico, stato.dico);
+    // stesse righe delle stanze: chi ha imparato i tasti non deve imparare altro (qui 0 o 1)
+    voci.innerHTML = FISSI.map(f =>
+      riga(f.k, f.nome, euro(PREZZI[f.k]) + (f.nota ? " · " + f.nota : ""), f.sim, stato[f.k], stato[f.k] === 0, stato[f.k] === 1)).join("");
     document.getElementById("subNome").textContent = "Tutta la casa";
     document.getElementById("subPrezzo").textContent = euro(fissi());
-    document.getElementById("avanti").textContent = "Fatto: torna al preventivo";
+    document.getElementById("avanti").textContent = "Avanti: Casa →";
   } else {
     const s = stato.stanze[aperta];
     voci.innerHTML = VOCI.map(v =>
-      riga(v.k, v.nome, v.k === "linea" ? `€ ${v.prezzo} · ${v.unita}` : `€ ${v.prezzo} ${v.unita}`, v.sim, "", s[v.k], s[v.k] === 0)).join("") +
+      riga(v.k, v.nome, euro(PREZZI[v.k]) + (v.nota ? " · " + v.nota : " l'uno"), v.sim, s[v.k], s[v.k] === 0)).join("") +
       `<button class="togli" id="togli">Togli questa stanza</button>`;
-    document.getElementById("subNome").textContent = `${s.nome} · ${punti(s)} punti`;
+    document.getElementById("subNome").textContent = `${s.nome} · ${puntiTxt(punti(s))}`;
     document.getElementById("subPrezzo").textContent = euro(costo(s));
     const dopo = aperta + 1 < stato.stanze.length ? stato.stanze[aperta + 1].nome : "Tutta la casa";
     document.getElementById("avanti").textContent = `Avanti: ${dopo} →`;
   }
 }
 
-function riga(k, nome, sotto, sim, pre, q, menoSpento, piuSpento) {
-  const qTesto = pre === "€" ? q : String(q);   // il quadro mostra il prezzo al posto della quantità
+function riga(k, nome, sotto, sim, q, menoSpento, piuSpento) {
   return `<div class="voce"><svg class="sim"><use href="#${sim}"/></svg>
     <div class="etich"><b>${nome}</b><small>${sotto}</small></div>
     <button class="tasto" data-k="${k}" data-d="-1" ${menoSpento ? "disabled" : ""} aria-label="Togli">−</button>
-    <div class="q num ${pre === "€" ? "largo" : ""} ${pre !== "€" && q === 0 ? "zero" : ""}" id="q-${k}">${qTesto}</div>
+    <div class="q num ${q === 0 ? "zero" : ""}" id="q-${k}">${q}</div>
     <button class="tasto" data-k="${k}" data-d="1" ${piuSpento ? "disabled" : ""} aria-label="Aggiungi">+</button></div>`;
 }
 
 function cambia(k, d) {
-  if (aperta === "casa") {
-    if (k === "quadro") stato.quadro = Math.max(100, stato.quadro + d * 10);
-    if (k === "dico") stato.dico = d > 0;
-  } else {
-    const s = stato.stanze[aperta];
-    s[k] = Math.max(0, s[k] + d);
-  }
-  stato.ritoccato = true;
-  disegnaB(false);
+  if (aperta === "casa") stato[k] = Math.min(1, Math.max(0, stato[k] + d));
+  else { const s = stato.stanze[aperta]; s[k] = Math.max(0, s[k] + d); }
+  stato.toccato = true;
+  disegnaS(false);
   const q = document.getElementById("q-" + k);
   if (q) { q.classList.remove("batte"); void q.offsetWidth; q.classList.add("batte"); }
 }
 
+// ---------- 2 · Casa ----------
+function disegnaC() {
+  document.getElementById("passiC").innerHTML = passi(2);
+  document.getElementById("case").innerHTML = Object.entries(CASE).map(([k, nome]) =>
+    `<button class="casa" data-tipo="${k}" aria-pressed="${k === stato.tipo}">${nome}</button>`).join("");
+  animaTotale(totale(), "totaleC");
+  document.getElementById("sintesi").textContent = `${puntiTxt(puntiTot())} · ${stanzeTxt(stato.stanze.length)} · IVA esclusa`;
+  document.getElementById("righe").innerHTML =
+    stato.stanze.map((s, i) => `<div class="riga"><span class="nome">${s.nome}</span><span class="p">${puntiTxt(punti(s))}</span><button class="cambia" data-stanza="${i}">Cambia</button></div>`).join("") +
+    `<div class="riga"><span class="nome">Quadro e conformità</span><span class="p num">${euro(fissi())}</span><button class="cambia" data-stanza="casa">Cambia</button></div>`;
+}
+
 // ---------- navigazione ----------
 function vai(schermo) {
+  document.getElementById("schermoS").hidden = schermo !== "S";
   document.getElementById("schermoC").hidden = schermo !== "C";
-  document.getElementById("schermoB").hidden = schermo !== "B";
-  if (schermo === "C") disegnaC(); else disegnaB(true);
+  if (schermo === "S") disegnaS(true); else disegnaC();
+  document.querySelector(`#schermo${schermo} .corpo`).scrollTop = 0;
 }
-function apri(i) { aperta = i; vai("B"); }
+function apri(i) { aperta = i; vai("S"); }
+function ridisegna() { if (document.getElementById("schermoS").hidden) disegnaC(); else disegnaS(false); }
 
 function toast(msg) {
   const t = document.getElementById("toast");
@@ -331,42 +337,36 @@ function toast(msg) {
   clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("on"), 2200);
 }
 
-// ---- Eventi C ----
-document.getElementById("case").addEventListener("click", e => {
-  const b = e.target.closest(".casa"); if (!b || b.dataset.tipo === stato.tipo) return;
-  if (stato.ritoccato && !confirm("Cambiando casa perdi i ritocchi fatti. Continuare?")) return;
-  nuovo(b.dataset.tipo); disegnaC();
-});
-document.getElementById("righe").addEventListener("click", e => {
-  const b = e.target.closest(".cambia"); if (!b) return;
-  apri(b.dataset.stanza === "casa" ? "casa" : Number(b.dataset.stanza));
-});
-document.getElementById("ritocca").addEventListener("click", () => apri(0));
-document.getElementById("ricomincia").addEventListener("click", () => {
-  if (stato.ritoccato && !confirm("Ricominciare da capo? I ritocchi si perdono.")) return;
-  nuovo("trilocale"); disegnaC();
-});
+document.querySelectorAll("[data-ricomincia]").forEach(b => b.addEventListener("click", () => {
+  if (stato.toccato && !confirm("Ricominciare da capo? I punti inseriti si perdono.")) return;
+  nuovo(); vai("S");
+}));
 
-document.getElementById("whatsapp").addEventListener("click", () => {
-  const c = CASE[stato.tipo];
-  const testo = [
-    `*Preventivo impianto elettrico – ${c.nome}*`, "",
-    ...stato.stanze.map(s => `• ${s.nome}: ${punti(s)} punti – ${euro(costo(s))}`),
-    `• Quadro elettrico: ${euro(stato.quadro)}`,
-    stato.dico ? `• Dichiarazione di conformità: ${euro(DICO)}` : "", "",
-    `*Totale: ${euro(totale())}* (IVA esclusa)`,
-    stato.ritoccato ? "" : "Stima indicativa, da confermare.",
-  ].filter((r, i, a) => r !== "" || a[i - 1] !== "").join("\n").trim();
-  window.open("https://wa.me/?text=" + encodeURIComponent(testo), "_blank");
+// ---- Prezzi ----
+document.querySelectorAll("[data-prezzi]").forEach(b => b.addEventListener("click", () => {
+  document.getElementById("listaPrezzi").innerHTML = [...VOCI, ...FISSI].map(v =>
+    `<div class="prezzo"><label for="p-${v.k}"><svg class="sim"><use href="#${v.sim}"/></svg>${v.uno}</label>
+      <div class="campo"><span>€</span><input id="p-${v.k}" data-k="${v.k}" type="text" inputmode="numeric" value="${PREZZI[v.k]}"></div></div>`).join("");
+  document.getElementById("veloP").classList.add("on");
+}));
+document.getElementById("salvaP").addEventListener("click", () => {
+  document.querySelectorAll("#listaPrezzi input").forEach(i => {
+    const n = parseInt(i.value.replace(/\D/g, ""), 10);
+    PREZZI[i.dataset.k] = Number.isFinite(n) ? n : 0;
+  });
+  document.getElementById("veloP").classList.remove("on");
+  ridisegna();
+  toast("Prezzi aggiornati.");
 });
+document.getElementById("annullaP").addEventListener("click", () => document.getElementById("veloP").classList.remove("on"));
+document.getElementById("veloP").addEventListener("click", e => { if (e.target.id === "veloP") e.currentTarget.classList.remove("on"); });
 
-// ---- Eventi B ----
-document.getElementById("indietro").addEventListener("click", () => vai("C"));
+// ---- Eventi · Ritocchi ----
 document.getElementById("schede").addEventListener("click", e => {
   const b = e.target.closest(".scheda"); if (!b) return;
   if (b.id === "aggiungi") return apriFoglio();
   aperta = b.dataset.i === "casa" ? "casa" : Number(b.dataset.i);
-  disegnaB(true);
+  disegnaS(true);
 });
 document.getElementById("voci").addEventListener("click", e => {
   const t = e.target.closest(".tasto");
@@ -375,18 +375,46 @@ document.getElementById("voci").addEventListener("click", e => {
     const nome = stato.stanze[aperta].nome;
     if (stato.stanze.length === 1) return toast("Serve almeno una stanza.");
     stato.stanze.splice(aperta, 1);
-    stato.ritoccato = true;
+    stato.toccato = true;
     aperta = Math.min(aperta, stato.stanze.length - 1);
-    disegnaB(true);
+    disegnaS(true);
     toast(`${nome} tolta dal preventivo.`);
   }
 });
 document.getElementById("avanti").addEventListener("click", () => {
   if (aperta === "casa") return vai("C");
   aperta = aperta + 1 < stato.stanze.length ? aperta + 1 : "casa";
-  disegnaB(true);
-  document.querySelector("#schermoB .corpo").scrollTop = 0;
+  disegnaS(true);
+  document.querySelector("#schermoS .corpo").scrollTop = 0;
 });
+
+// ---- Eventi · Casa ----
+document.getElementById("case").addEventListener("click", e => {
+  const b = e.target.closest(".casa"); if (!b) return;
+  stato.tipo = b.dataset.tipo; disegnaC();   // solo etichetta: i numeri non cambiano
+});
+document.getElementById("righe").addEventListener("click", e => {
+  const b = e.target.closest(".cambia"); if (!b) return;
+  apri(b.dataset.stanza === "casa" ? "casa" : Number(b.dataset.stanza));
+});
+document.getElementById("ritocca").addEventListener("click", () => apri(0));
+
+document.getElementById("whatsapp").addEventListener("click", () => {
+  const testo = [
+    `*Preventivo impianto elettrico – ${CASE[stato.tipo]}*`, "",
+    ...stato.stanze.map(s => `• ${s.nome}: ${puntiTxt(punti(s))} – ${euro(costo(s))}`),
+    ...(stato.quadro ? [`• Quadro elettrico: ${euro(PREZZI.quadro)}`] : []),
+    ...(stato.dico ? [`• Dichiarazione di conformità: ${euro(PREZZI.dico)}`] : []), "",
+    `*Totale: ${euro(totale())}* (IVA esclusa)`,
+  ].join("\n");
+  // demo: niente WhatsApp vero, solo l'anteprima del messaggio (*grassetto* come su WhatsApp)
+  const html = testo.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\*([^*\n]+)\*/g, "<b>$1</b>");
+  const ora = new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+  document.getElementById("bollaWA").innerHTML = html + '<span class="ora">' + ora + " ✓✓</span>";
+  document.getElementById("veloWA").classList.add("on");
+});
+document.getElementById("chiudiWA").addEventListener("click", () => document.getElementById("veloWA").classList.remove("on"));
+document.getElementById("veloWA").addEventListener("click", e => { if (e.target.id === "veloWA") e.currentTarget.classList.remove("on"); });
 
 // ---- Nuova stanza ----
 function apriFoglio() {
@@ -399,16 +427,16 @@ document.getElementById("velo").addEventListener("click", e => {
     // se il nome c'è già, aggiunge un numero: "Bagno 2", "Bagno 3"…
     let nome = b.dataset.n, n = 2;
     while (stato.stanze.some(s => s.nome === nome)) nome = `${b.dataset.n} ${n++}`;
-    stato.stanze.push({ nome, luce: 1, presa: 1, interr: 0, linea: 0 });
-    stato.ritoccato = true;
+    stato.stanze.push(vuota(nome));
+    stato.toccato = true;
     aperta = stato.stanze.length - 1;
-    disegnaB(true);
+    disegnaS(true);
   }
   if (b || e.target.id === "velo") document.getElementById("velo").classList.remove("on");
 });
 
-nuovo("trilocale");
-vai("C");
+nuovo();
+vai("S");
 </script>
 </body>
 </html>
