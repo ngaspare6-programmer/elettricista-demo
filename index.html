@@ -106,6 +106,19 @@
   .mano input { flex: 1; min-width: 0; height: 52px; border: 1.5px solid var(--verde); border-radius: 12px; padding: 0 12px; font-size: 16px; outline: none; }
   .mano button { min-height: 52px; padding: 0 16px; border-radius: 12px; background: var(--verde); color: #fff; font-weight: 600; }
 
+  .etich[data-sel] { cursor: pointer; }
+  .voce.sel { background: var(--fondo); margin: 0 -14px; padding-left: 14px; padding-right: 14px; }
+  .scelta-togli { display: flex; align-items: center; gap: 4px; font-size: 14px; margin-top: 2px; }
+  .scelta-togli button { min-height: 36px; padding: 0 10px 0 0; font-weight: 600; }
+  .scelta-togli .rosso { color: #B91C1C; }
+  .scelta-togli .annulla { color: var(--sec); font-weight: 500; padding-left: 10px; }
+  .gia { margin-top: 4px; }
+  .gia-titolo { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--sec); margin: 6px 0 2px; }
+  .gia-riga { display: flex; align-items: center; min-height: 48px; border-bottom: 1px solid var(--linea); font-size: 15px; }
+  .gia-riga span { flex: 1; }
+  .gia-riga button { min-height: 44px; padding: 0 4px 0 14px; color: var(--sec); font-size: 14px; }
+  .gia-riga button:hover { color: #B91C1C; }
+
   /* listino prezzi */
   .prezzo { display: flex; align-items: center; gap: 10px; min-height: 60px; border-bottom: 1px solid var(--linea); }
   .prezzo label { flex: 1; font-size: 16px; display: flex; align-items: center; gap: 10px; }
@@ -261,6 +274,7 @@
     <div class="foglio">
       <h2>Che componente aggiungi?</h2>
       <p class="spiega" id="compSpiega"></p>
+      <div class="gia" id="giaComp"></div>
       <div class="scelte" id="sceltaComp"></div>
       <div class="mano" id="mano" hidden>
         <input id="nomeMano" type="text" maxlength="40" placeholder="Nome del componente" autocomplete="off">
@@ -274,6 +288,10 @@
     <div class="foglio">
       <h2>Che stanza aggiungi?</h2>
       <div class="scelte" id="scelte"></div>
+      <div class="mano" id="manoStanza" hidden>
+        <input id="nomeStanza" type="text" maxlength="30" placeholder="Nome della stanza" autocomplete="off">
+        <button id="aggStanza">Aggiungi</button>
+      </div>
     </div>
   </div>
 </div>
@@ -303,20 +321,23 @@ const CATALOGO = [
   { k: "invert",    nome: "Invertitore",     uno: "Invertitore",                   sim: "interr", prezzo: 65 },
 ];
 CATALOGO.forEach(c => { PREZZI[c.k] = c.prezzo; });
-const COMP = Object.fromEntries(CATALOGO.map(c => [c.k, c]));
+const COMP = Object.fromEntries([...VOCI, ...CATALOGO].map(c => [c.k, c]));
+const BASE = VOCI.map(v => v.k);
 const CASE = { bilocale: "Bilocale", trilocale: "Trilocale", villetta: "Villetta" };
 const NUOVE = ["Cucina", "Camera", "Cameretta", "Bagno", "Corridoio", "Studio", "Ripostiglio", "Esterno"];
 
 // ---- Stato del preventivo: si parte dal solo Soggiorno, tutto a zero ----
 let stato = null;
 let aperta = 0;            // scheda aperta nei ritocchi: indice della stanza, oppure "casa"
-const vuota = nome => ({ nome, luce: 0, presa: 0, interr: 0, linea: 0, extra: [] });
+let sel = null;            // voce della stanza su cui si è toccato il nome (mostra "Togli · Annulla")
+let avvisoTogli = false;   // l'avviso "tocca il nome per toglierlo" compare una volta sola
+const vuota = nome => ({ nome, luce: 0, presa: 0, interr: 0, linea: 0, voci: [...BASE] });
 function nuovo() {
   stato = { tipo: "trilocale", quadro: 0, dico: 0, toccato: false, stanze: [vuota("Soggiorno")] };
   aperta = 0;
 }
 
-const vociDi = s => [...VOCI, ...s.extra.map(k => COMP[k])];
+const vociDi = s => s.voci.map(k => COMP[k]);
 const punti = s => vociDi(s).reduce((t, v) => t + s[v.k], 0);
 const costo = s => vociDi(s).reduce((t, v) => t + s[v.k] * PREZZI[v.k], 0);
 const fissi = () => stato.quadro * PREZZI.quadro + stato.dico * PREZZI.dico;
@@ -373,7 +394,7 @@ function disegnaS(scorri) {
   } else {
     const s = stato.stanze[aperta];
     voci.innerHTML = vociDi(s).map(v =>
-      riga(v.k, v.nome, euro(PREZZI[v.k]) + (v.nota ? " · " + v.nota : " l'uno"), v.sim, s[v.k], s[v.k] === 0)).join("") +
+      riga(v.k, v.nome, euro(PREZZI[v.k]) + (v.nota ? " · " + v.nota : " l'uno"), v.sim, s[v.k], s[v.k] === 0, false, true)).join("") +
       `<button class="agg-comp" id="aggComp">+ Aggiungi componente</button>` +
       `<button class="togli" id="togli">Togli questa stanza</button>`;
     document.getElementById("subNome").textContent = `${s.nome} · ${puntiTxt(punti(s))}`;
@@ -383,9 +404,12 @@ function disegnaS(scorri) {
   }
 }
 
-function riga(k, nome, sotto, sim, q, menoSpento, piuSpento) {
-  return `<div class="voce"><svg class="sim"><use href="#${sim}"/></svg>
-    <div class="etich"><b>${nome}</b><small>${sotto}</small></div>
+function riga(k, nome, sotto, sim, q, menoSpento, piuSpento, togli) {
+  const scelta = togli && sel === k;
+  return `<div class="voce ${scelta ? "sel" : ""}"><svg class="sim"><use href="#${sim}"/></svg>
+    <div class="etich" ${togli ? `data-sel="${k}"` : ""}><b>${nome}</b>${scelta
+      ? `<div class="scelta-togli"><button class="rosso" data-togli-riga="${k}">Togli</button>·<button class="annulla" data-annulla>Annulla</button></div>`
+      : `<small>${sotto}</small>`}</div>
     <button class="tasto" data-k="${k}" data-d="-1" ${menoSpento ? "disabled" : ""} aria-label="Togli">−</button>
     <div class="q num ${q === 0 ? "zero" : ""}" id="q-${k}">${q}</div>
     <button class="tasto" data-k="${k}" data-d="1" ${piuSpento ? "disabled" : ""} aria-label="Aggiungi">+</button></div>`;
@@ -419,13 +443,13 @@ function vai(schermo) {
   if (schermo === "S") disegnaS(true); else disegnaC();
   document.querySelector(`#schermo${schermo} .corpo`).scrollTop = 0;
 }
-function apri(i) { aperta = i; vai("S"); }
+function apri(i) { aperta = i; sel = null; vai("S"); }
 function ridisegna() { if (document.getElementById("schermoS").hidden) disegnaC(); else disegnaS(false); }
 
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("on");
-  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("on"), 2200);
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("on"), msg.length > 40 ? 3500 : 2200);
 }
 
 document.querySelectorAll("[data-ricomincia]").forEach(b => b.addEventListener("click", () => {
@@ -435,7 +459,7 @@ document.querySelectorAll("[data-ricomincia]").forEach(b => b.addEventListener("
 
 // ---- Prezzi ----
 document.querySelectorAll("[data-prezzi]").forEach(b => b.addEventListener("click", () => {
-  const usati = CATALOGO.filter(c => stato.stanze.some(s => s.extra.includes(c.k)));
+  const usati = CATALOGO.filter(c => stato.stanze.some(s => s.voci.includes(c.k)));
   document.getElementById("listaPrezzi").innerHTML = [...VOCI, ...usati, ...FISSI].map(v =>
     `<div class="prezzo"><label for="p-${v.k}"><svg class="sim"><use href="#${v.sim}"/></svg>${v.uno}</label>
       <div class="campo"><span>€</span><input id="p-${v.k}" data-k="${v.k}" type="text" inputmode="numeric" value="${PREZZI[v.k]}"></div></div>`).join("");
@@ -457,12 +481,18 @@ document.getElementById("veloP").addEventListener("click", e => { if (e.target.i
 document.getElementById("schede").addEventListener("click", e => {
   const b = e.target.closest(".scheda"); if (!b) return;
   if (b.id === "aggiungi") return apriFoglio();
-  aperta = b.dataset.i === "casa" ? "casa" : Number(b.dataset.i);
+  aperta = b.dataset.i === "casa" ? "casa" : Number(b.dataset.i); sel = null;
   disegnaS(true);
 });
 document.getElementById("voci").addEventListener("click", e => {
+  const tr = e.target.closest("[data-togli-riga]");
+  if (tr) { sel = null; return togliComp(tr.dataset.togliRiga); }
+  const nome = e.target.closest("[data-sel]");
+  if (nome && !e.target.closest("[data-annulla]")) { sel = sel === nome.dataset.sel ? null : nome.dataset.sel; return disegnaS(false); }
   const t = e.target.closest(".tasto");
+  if (sel) { sel = null; disegnaS(false); }    // qualsiasi altro tocco chiude "Togli · Annulla"
   if (t && !t.disabled) return cambia(t.dataset.k, Number(t.dataset.d));
+  if (e.target.closest("[data-annulla]")) return;
   if (e.target.closest("#aggComp")) return apriComp();
   if (e.target.closest("#togli")) {
     const nome = stato.stanze[aperta].nome;
@@ -476,7 +506,7 @@ document.getElementById("voci").addEventListener("click", e => {
 });
 document.getElementById("avanti").addEventListener("click", () => {
   if (aperta === "casa") return vai("C");
-  aperta = aperta + 1 < stato.stanze.length ? aperta + 1 : "casa";
+  aperta = aperta + 1 < stato.stanze.length ? aperta + 1 : "casa"; sel = null;
   disegnaS(true);
   document.querySelector("#schermoS .corpo").scrollTop = 0;
 });
@@ -551,8 +581,14 @@ document.getElementById("veloWA").addEventListener("click", e => { if (e.target.
 // ---- Nuovo componente nella stanza aperta ----
 function apriComp() {
   const s = stato.stanze[aperta];
-  const liberi = CATALOGO.filter(c => !s.extra.includes(c.k));
+  // anche le voci di base tolte per sbaglio tornano qui, da riaggiungere
+  const liberi = [...VOCI, ...CATALOGO].filter(c => !s.voci.includes(c.k));
   document.getElementById("compSpiega").textContent = `In: ${s.nome}. Il prezzo si cambia da "Prezzi".`;
+  document.getElementById("giaComp").innerHTML = s.voci.length
+    ? `<div class="gia-titolo">Già in questa stanza</div>` +
+      s.voci.map(k => `<div class="gia-riga"><span>${COMP[k].nome}</span><button data-togli="${k}">Togli</button></div>`).join("") +
+      `<div class="gia-titolo" style="margin-top:14px">Aggiungi</div>`
+    : "";
   document.getElementById("sceltaComp").innerHTML =
     liberi.map(c => `<button data-c="${c.k}">${c.nome}${c.nota ? ` <small style="color:var(--sec);font-weight:500">${c.nota}</small>` : ""}</button>`).join("") +
     `<button class="altro" id="compAltro">+ Altro</button>`;
@@ -560,13 +596,30 @@ function apriComp() {
   document.getElementById("nomeMano").value = "";
   document.getElementById("veloComp").classList.add("on");
 }
-function aggiungiComp(k) {
+function aggiungiComp(k, avvisoMio) {
   const s = stato.stanze[aperta];
-  s.extra.push(k); s[k] = 1;          // si aggiunge perché ne serve almeno uno
+  s.voci.push(k); s[k] = 1;          // si aggiunge perché ne serve almeno uno
   stato.toccato = true;
   document.getElementById("veloComp").classList.remove("on");
   disegnaS(false);
   const c = document.querySelector("#schermoS .corpo"); c.scrollTop = c.scrollHeight;
+  // un solo avviso alla volta: se ce n'è già uno (es. il prezzo), il suggerimento si aggiunge lì
+  const suggerimento = avvisoTogli ? "" : "Per toglierlo, tocca il nome.";
+  avvisoTogli = true;
+  const msg = [avvisoMio, suggerimento].filter(Boolean).join(" ");
+  if (msg) toast(msg);
+}
+function togliComp(k) {
+  const s = stato.stanze[aperta], nome = COMP[k].nome;
+  s.voci = s.voci.filter(x => x !== k);
+  if (BASE.includes(k)) s[k] = 0; else delete s[k];
+  // uno scritto a mano che non è più in nessuna stanza sparisce anche dall'elenco (es. nome sbagliato)
+  if (k.startsWith("mano") && !stato.stanze.some(x => x.voci.includes(k))) {
+    CATALOGO.splice(CATALOGO.findIndex(c => c.k === k), 1); delete COMP[k]; delete PREZZI[k];
+  }
+  stato.toccato = true;
+  disegnaS(false);
+  toast(`${nome} tolto da ${s.nome}.`);
 }
 // componente scritto a mano: entra nel catalogo, così si ritrova anche nelle altre stanze
 let nMano = 0;
@@ -577,10 +630,14 @@ function aggiungiMano() {
   const k = "mano" + (++nMano);
   const c = { k, nome, uno: nome, sim: "altro", prezzo: 0 };
   CATALOGO.push(c); COMP[k] = c; PREZZI[k] = 0;
-  aggiungiComp(k);
-  toast(`${nome}: il prezzo si imposta da "Prezzi".`);
+  aggiungiComp(k, `${nome}: il prezzo si imposta da "Prezzi".`);
 }
 document.getElementById("veloComp").addEventListener("click", e => {
+  const t = e.target.closest("[data-togli]");
+  if (t) {
+    togliComp(t.dataset.togli);
+    return apriComp();                  // il foglio resta aperto: torna tra quelli da aggiungere
+  }
   const b = e.target.closest("[data-c]");
   if (b) return aggiungiComp(b.dataset.c);
   if (e.target.closest("#compAltro")) {
@@ -594,22 +651,39 @@ document.getElementById("nomeMano").addEventListener("keydown", e => { if (e.key
 
 // ---- Nuova stanza ----
 function apriFoglio() {
-  document.getElementById("scelte").innerHTML = NUOVE.map(n => `<button data-n="${n}">${n}</button>`).join("");
+  document.getElementById("scelte").innerHTML = NUOVE.map(n => `<button data-n="${n}">${n}</button>`).join("") +
+    `<button class="altro" id="stanzaAltro">+ Altro</button>`;
+  document.getElementById("manoStanza").hidden = true;
+  document.getElementById("nomeStanza").value = "";
   document.getElementById("velo").classList.add("on");
+}
+function aggiungiStanza(base) {
+  // se il nome c'è già, aggiunge un numero: "Bagno 2", "Bagno 3"…
+  let nome = base, n = 2;
+  while (stato.stanze.some(s => s.nome === nome)) nome = `${base} ${n++}`;
+  stato.stanze.push(vuota(nome));
+  stato.toccato = true;
+  aperta = stato.stanze.length - 1;
+  document.getElementById("velo").classList.remove("on");
+  disegnaS(true);
+}
+function aggiungiStanzaMano() {
+  let nome = document.getElementById("nomeStanza").value.replace(/[<>&"']/g, "").trim();
+  nome = nome.charAt(0).toUpperCase() + nome.slice(1);   // "taverna" → "Taverna"
+  if (!nome) return document.getElementById("nomeStanza").focus();
+  aggiungiStanza(nome);
 }
 document.getElementById("velo").addEventListener("click", e => {
   const b = e.target.closest("[data-n]");
-  if (b) {
-    // se il nome c'è già, aggiunge un numero: "Bagno 2", "Bagno 3"…
-    let nome = b.dataset.n, n = 2;
-    while (stato.stanze.some(s => s.nome === nome)) nome = `${b.dataset.n} ${n++}`;
-    stato.stanze.push(vuota(nome));
-    stato.toccato = true;
-    aperta = stato.stanze.length - 1;
-    disegnaS(true);
+  if (b) return aggiungiStanza(b.dataset.n);
+  if (e.target.closest("#stanzaAltro")) {
+    document.getElementById("manoStanza").hidden = false;
+    return document.getElementById("nomeStanza").focus();
   }
-  if (b || e.target.id === "velo") document.getElementById("velo").classList.remove("on");
+  if (e.target.closest("#aggStanza")) return aggiungiStanzaMano();
+  if (e.target.id === "velo") document.getElementById("velo").classList.remove("on");
 });
+document.getElementById("nomeStanza").addEventListener("keydown", e => { if (e.key === "Enter") aggiungiStanzaMano(); });
 
 nuovo();
 vai("S");
