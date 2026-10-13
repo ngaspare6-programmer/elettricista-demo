@@ -14,7 +14,8 @@
     --verde: #166534; --verde-chiaro: #22C55E; --verde-tenue: #E8F3EC; --graf: #121316;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; }
+  /* la pagina resta ferma: scorre solo l'elenco (sul telefono la pagina intera si "incastrava") */
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
   body { background: var(--pagina); color: var(--testo); font-family: Inter, sans-serif; font-size: 15px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
   button, input { font-family: inherit; color: inherit; }
   button { background: none; border: 0; cursor: pointer; }
@@ -22,11 +23,11 @@
   .sim { width: 24px; height: 24px; flex: none; }
 
   /* l'app occupa tutto il telefono; su computer resta una colonna larga come un telefono */
-  .app { max-width: 430px; height: 100vh; height: 100dvh; margin: 0 auto; background: var(--bg); position: relative; overflow: hidden; }
+  .app { max-width: 430px; height: 100%; margin: 0 auto; background: var(--bg); position: relative; overflow: hidden; }
   @media (min-width: 600px) { body { padding: 24px 0; } .app { height: calc(100vh - 48px); border-radius: 24px; box-shadow: 0 18px 40px rgba(0,0,0,.12); } }
   .schermo { height: 100%; display: flex; flex-direction: column; }
   .schermo[hidden] { display: none; }
-  .corpo { flex: 1; overflow-y: auto; }
+  .corpo { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 
   /* barra in alto, uguale nelle due schermate */
   .barra { display: flex; align-items: center; gap: 4px; padding: 14px 14px 4px 18px; flex: none; }
@@ -68,7 +69,8 @@
   .q.zero { color: var(--spento); }
   .q.batte { animation: batte .25s; }
   @keyframes batte { 50% { transform: scale(1.25); color: var(--verde); } }
-  .togli { display: block; margin: 14px auto 0; min-height: 44px; padding: 0 12px; font-size: 14px; color: var(--sec); }
+  .agg-comp { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: 52px; margin-top: 14px; border: 1.5px dashed var(--linea); border-radius: 12px; color: var(--verde); font-weight: 600; font-size: 15px; }
+  .togli { display: block; margin: 6px auto 0; min-height: 44px; padding: 0 12px; font-size: 14px; color: var(--sec); }
 
   .sub { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; margin-bottom: 10px; }
   .sub b { font-size: 18px; }
@@ -98,6 +100,12 @@
   .scelte { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
   .scelte button { min-height: 56px; border: 1.5px solid var(--linea); border-radius: 12px; font-weight: 600; }
 
+  .scelte .altro { border-style: dashed; color: var(--verde); }
+  .mano { display: flex; gap: 8px; margin-top: 10px; }
+  .mano[hidden] { display: none; }
+  .mano input { flex: 1; min-width: 0; height: 52px; border: 1.5px solid var(--verde); border-radius: 12px; padding: 0 12px; font-size: 16px; outline: none; }
+  .mano button { min-height: 52px; padding: 0 16px; border-radius: 12px; background: var(--verde); color: #fff; font-weight: 600; }
+
   /* listino prezzi */
   .prezzo { display: flex; align-items: center; gap: 10px; min-height: 60px; border-bottom: 1px solid var(--linea); }
   .prezzo label { flex: 1; font-size: 16px; display: flex; align-items: center; gap: 10px; }
@@ -112,6 +120,25 @@
   .chat { background: #EFEAE2; border-radius: 14px; padding: 14px 12px; max-height: 52vh; overflow-y: auto; margin-top: 8px; }
   .bolla { background: #D9FDD3; border-radius: 10px 10px 2px 10px; padding: 9px 11px 6px; margin-left: 18px; font-size: 14.5px; line-height: 1.45; color: #111b21; white-space: pre-wrap; box-shadow: 0 1px 0 rgba(0,0,0,.08); }
   .bolla .ora { display: block; text-align: right; font-size: 11px; color: #667781; margin-top: 2px; }
+  /* invio: scelta del canale e anteprime */
+  .canali { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .canali button { display: flex; flex-direction: column; align-items: flex-start; min-height: 64px; padding: 10px 14px; border: 1.5px solid var(--linea); border-radius: 12px; text-align: left; }
+  .canali b { font-size: 16px; }
+  .canali small { color: var(--sec); font-size: 13px; }
+  .mail { border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; margin-top: 8px; font-size: 14px; }
+  .mail-testa { background: var(--fondo); padding: 10px 12px; border-bottom: 1px solid var(--linea); }
+  .mail-testa div { color: var(--sec); }
+  .mail-testa b { color: var(--testo); font-weight: 600; }
+  .mail-corpo { padding: 12px; white-space: pre-wrap; max-height: 40vh; overflow-y: auto; line-height: 1.5; }
+  .carta { background: #F0EFEB; border-radius: 12px; padding: 14px; margin-top: 8px; max-height: 56vh; overflow-y: auto; }
+  .pagina-pdf { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.12); padding: 20px 18px 24px; min-height: 380px; font-size: 12px; }
+  .pdf-titolo { font-family: "Space Grotesk", sans-serif; font-size: 20px; font-weight: 700; letter-spacing: .04em; }
+  .pdf-sotto { color: var(--sec); margin-bottom: 14px; }
+  .pdf-riga { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--linea); }
+  .pdf-riga span:first-child { flex: 1; }
+  .pdf-riga .d { color: var(--sec); }
+  .pdf-tot { display: flex; justify-content: space-between; margin-top: 12px; font-family: "Space Grotesk", sans-serif; font-size: 16px; font-weight: 700; }
+  .pdf-nota { color: var(--sec); margin-top: 4px; }
   .nota-demo { text-align: center; font-size: 13px; color: var(--sec); margin: 12px 0 10px; }
 
   .toast { position: fixed; left: 50%; bottom: 120px; transform: translate(-50%, 20px); background: var(--graf); color: #fff; font-size: 14px; padding: 12px 16px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; max-width: 340px; text-align: center; z-index: 60; }
@@ -126,6 +153,7 @@
   <symbol id="interr" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="13" r="3"/><path d="M9 11l7-7"/></g></symbol>
   <symbol id="linea" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 2L5 11h5l-1 7 6-9h-5z"/></g></symbol>
   <symbol id="quadro" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 7v6M10 7v6M13 7v6"/></g></symbol>
+  <symbol id="altro" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="14" height="14" rx="4"/><path d="M10 7v6M7 10h6"/></g></symbol>
   <symbol id="dico" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 2h7l4 4v12H5z"/><path d="M8 11l2 2 3-4"/></g></symbol>
 </svg>
 
@@ -166,8 +194,8 @@
     </div>
     <div class="corpo"><div class="righe" id="righe"></div></div>
     <div class="piede">
-      <button class="btn" id="ritocca">Ritocca le stanze</button>
-      <button class="link" id="whatsapp">oppure <b>manda su WhatsApp</b></button>
+      <button class="btn" id="ritocca">Rivedi le stanze</button>
+      <button class="link" id="invia">oppure <b>invia il preventivo</b></button>
     </div>
   </section>
 
@@ -182,6 +210,42 @@
     </div>
   </div>
 
+  <!-- foglio "come lo mandi?" -->
+  <div class="velo" id="veloInvio">
+    <div class="foglio">
+      <h2>Come lo mandi?</h2>
+      <div class="canali">
+        <button data-canale="WA"><b>WhatsApp</b><small>Messaggio in chat</small></button>
+        <button data-canale="Mail"><b>Email</b><small>Il preventivo nel testo della mail</small></button>
+        <button data-canale="PDF"><b>PDF</b><small>Foglio da stampare o allegare</small></button>
+      </div>
+      <button class="link" data-chiudi>Annulla</button>
+    </div>
+  </div>
+
+  <!-- foglio "anteprima email" -->
+  <div class="velo" id="veloMail">
+    <div class="foglio">
+      <h2>Ecco la mail che riceverebbe il tuo cliente</h2>
+      <div class="mail">
+        <div class="mail-testa"><div>A: <b>il tuo cliente</b></div><div>Oggetto: <b id="oggettoMail"></b></div></div>
+        <div class="mail-corpo" id="corpoMail"></div>
+      </div>
+      <p class="nota-demo">Nella demo non parte nessuna mail.</p>
+      <button class="btn-2" data-chiudi>Chiudi</button>
+    </div>
+  </div>
+
+  <!-- foglio "anteprima PDF" -->
+  <div class="velo" id="veloPDF">
+    <div class="foglio">
+      <h2>Ecco il PDF che riceverebbe il tuo cliente</h2>
+      <div class="carta"><div class="pagina-pdf" id="paginaPDF"></div></div>
+      <p class="nota-demo">Nella demo non si scarica nessun file.</p>
+      <button class="btn-2" data-chiudi>Chiudi</button>
+    </div>
+  </div>
+
   <!-- foglio "anteprima WhatsApp" -->
   <div class="velo" id="veloWA">
     <div class="foglio">
@@ -189,6 +253,19 @@
       <div class="chat"><div class="bolla" id="bollaWA"></div></div>
       <p class="nota-demo">Nella demo non parte nessun messaggio.</p>
       <button class="btn-2" id="chiudiWA">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- foglio "nuovo componente" -->
+  <div class="velo" id="veloComp">
+    <div class="foglio">
+      <h2>Che componente aggiungi?</h2>
+      <p class="spiega" id="compSpiega"></p>
+      <div class="scelte" id="sceltaComp"></div>
+      <div class="mano" id="mano" hidden>
+        <input id="nomeMano" type="text" maxlength="40" placeholder="Nome del componente" autocomplete="off">
+        <button id="aggMano">Aggiungi</button>
+      </div>
     </div>
   </div>
 
@@ -215,20 +292,33 @@ const FISSI = [
   { k: "quadro", nome: "Quadro elettrico",            uno: "Quadro elettrico", sim: "quadro" },
   { k: "dico",   nome: "Dichiarazione di conformità", uno: "Conformità (DiCo)", sim: "dico", nota: "DM 37/08" },
 ];
+// componenti in più, da aggiungere stanza per stanza (prezzi indicativi, si cambiano da "Prezzi")
+const CATALOGO = [
+  { k: "bipolare",  nome: "Presa bipolare",  uno: "Presa bipolare",  nota: "2P+T", sim: "presa",  prezzo: 55 },
+  { k: "tripolare", nome: "Presa tripolare", uno: "Presa tripolare", nota: "3P+T", sim: "presa",  prezzo: 120 },
+  { k: "schuko",    nome: "Presa schuko",    uno: "Presa schuko",                  sim: "presa",  prezzo: 60 },
+  { k: "tv",        nome: "Presa TV",        uno: "Presa TV",                      sim: "presa",  prezzo: 50 },
+  { k: "dati",      nome: "Presa dati",      uno: "Presa dati",      nota: "rete", sim: "presa",  prezzo: 65 },
+  { k: "deviatore", nome: "Deviatore",       uno: "Deviatore",                     sim: "interr", prezzo: 55 },
+  { k: "invert",    nome: "Invertitore",     uno: "Invertitore",                   sim: "interr", prezzo: 65 },
+];
+CATALOGO.forEach(c => { PREZZI[c.k] = c.prezzo; });
+const COMP = Object.fromEntries(CATALOGO.map(c => [c.k, c]));
 const CASE = { bilocale: "Bilocale", trilocale: "Trilocale", villetta: "Villetta" };
 const NUOVE = ["Cucina", "Camera", "Cameretta", "Bagno", "Corridoio", "Studio", "Ripostiglio", "Esterno"];
 
 // ---- Stato del preventivo: si parte dal solo Soggiorno, tutto a zero ----
 let stato = null;
 let aperta = 0;            // scheda aperta nei ritocchi: indice della stanza, oppure "casa"
-const vuota = nome => ({ nome, luce: 0, presa: 0, interr: 0, linea: 0 });
+const vuota = nome => ({ nome, luce: 0, presa: 0, interr: 0, linea: 0, extra: [] });
 function nuovo() {
   stato = { tipo: "trilocale", quadro: 0, dico: 0, toccato: false, stanze: [vuota("Soggiorno")] };
   aperta = 0;
 }
 
-const punti = s => VOCI.reduce((t, v) => t + s[v.k], 0);
-const costo = s => VOCI.reduce((t, v) => t + s[v.k] * PREZZI[v.k], 0);
+const vociDi = s => [...VOCI, ...s.extra.map(k => COMP[k])];
+const punti = s => vociDi(s).reduce((t, v) => t + s[v.k], 0);
+const costo = s => vociDi(s).reduce((t, v) => t + s[v.k] * PREZZI[v.k], 0);
 const fissi = () => stato.quadro * PREZZI.quadro + stato.dico * PREZZI.dico;
 const totale = () => stato.stanze.reduce((t, s) => t + costo(s), 0) + fissi();
 const puntiTot = () => stato.stanze.reduce((t, s) => t + punti(s), 0);
@@ -254,7 +344,7 @@ function animaTotale(fine, id) {
 }
 
 function passi(n) {
-  return ["1 Ritocchi", "2 Casa"].map((t, i) =>
+  return ["1 Stanze", "2 Casa"].map((t, i) =>
     `<span class="${i + 1 === n ? "on" : i + 1 < n ? "fatto" : ""}">${t}</span>`).join("");
 }
 
@@ -282,8 +372,9 @@ function disegnaS(scorri) {
     document.getElementById("avanti").textContent = "Avanti: Casa →";
   } else {
     const s = stato.stanze[aperta];
-    voci.innerHTML = VOCI.map(v =>
+    voci.innerHTML = vociDi(s).map(v =>
       riga(v.k, v.nome, euro(PREZZI[v.k]) + (v.nota ? " · " + v.nota : " l'uno"), v.sim, s[v.k], s[v.k] === 0)).join("") +
+      `<button class="agg-comp" id="aggComp">+ Aggiungi componente</button>` +
       `<button class="togli" id="togli">Togli questa stanza</button>`;
     document.getElementById("subNome").textContent = `${s.nome} · ${puntiTxt(punti(s))}`;
     document.getElementById("subPrezzo").textContent = euro(costo(s));
@@ -344,7 +435,8 @@ document.querySelectorAll("[data-ricomincia]").forEach(b => b.addEventListener("
 
 // ---- Prezzi ----
 document.querySelectorAll("[data-prezzi]").forEach(b => b.addEventListener("click", () => {
-  document.getElementById("listaPrezzi").innerHTML = [...VOCI, ...FISSI].map(v =>
+  const usati = CATALOGO.filter(c => stato.stanze.some(s => s.extra.includes(c.k)));
+  document.getElementById("listaPrezzi").innerHTML = [...VOCI, ...usati, ...FISSI].map(v =>
     `<div class="prezzo"><label for="p-${v.k}"><svg class="sim"><use href="#${v.sim}"/></svg>${v.uno}</label>
       <div class="campo"><span>€</span><input id="p-${v.k}" data-k="${v.k}" type="text" inputmode="numeric" value="${PREZZI[v.k]}"></div></div>`).join("");
   document.getElementById("veloP").classList.add("on");
@@ -371,6 +463,7 @@ document.getElementById("schede").addEventListener("click", e => {
 document.getElementById("voci").addEventListener("click", e => {
   const t = e.target.closest(".tasto");
   if (t && !t.disabled) return cambia(t.dataset.k, Number(t.dataset.d));
+  if (e.target.closest("#aggComp")) return apriComp();
   if (e.target.closest("#togli")) {
     const nome = stato.stanze[aperta].nome;
     if (stato.stanze.length === 1) return toast("Serve almeno una stanza.");
@@ -399,12 +492,51 @@ document.getElementById("righe").addEventListener("click", e => {
 });
 document.getElementById("ritocca").addEventListener("click", () => apri(0));
 
-document.getElementById("whatsapp").addEventListener("click", () => {
+// ---- Invio: tre anteprime, nella demo non parte niente ----
+const titoloPrev = () => `Preventivo impianto elettrico – ${CASE[stato.tipo]}`;
+function vociPrev() {
+  return [
+    ...stato.stanze.map(s => ({ nome: s.nome, dett: puntiTxt(punti(s)), importo: costo(s), stanza: true })),
+    ...(stato.quadro ? [{ nome: "Quadro elettrico", dett: "", importo: PREZZI.quadro }] : []),
+    ...(stato.dico ? [{ nome: "Dichiarazione di conformità", dett: "DM 37/08", importo: PREZZI.dico }] : []),
+  ];
+}
+const chiudiFogli = () => document.querySelectorAll(".velo.on").forEach(v => v.classList.remove("on"));
+document.getElementById("invia").addEventListener("click", () => document.getElementById("veloInvio").classList.add("on"));
+document.querySelectorAll("[data-chiudi]").forEach(b => b.addEventListener("click", chiudiFogli));
+["veloInvio", "veloMail", "veloPDF"].forEach(id => document.getElementById(id).addEventListener("click", e => { if (e.target.id === id) chiudiFogli(); }));
+document.getElementById("veloInvio").addEventListener("click", e => {
+  const b = e.target.closest("[data-canale]"); if (!b) return;
+  document.getElementById("veloInvio").classList.remove("on");
+  ({ WA: anteprimaWA, Mail: anteprimaMail, PDF: anteprimaPDF })[b.dataset.canale]();
+});
+
+function anteprimaMail() {
+  document.getElementById("oggettoMail").textContent = titoloPrev();
+  document.getElementById("corpoMail").textContent = [
+    "Buongiorno,", "le invio il preventivo per l'impianto elettrico.", "",
+    ...vociPrev().map(v => `• ${v.nome}${v.dett ? ` (${v.dett})` : ""}: ${euro(v.importo)}`), "",
+    `Totale: ${euro(totale())} (IVA esclusa)`, "", "Cordiali saluti",
+  ].join("\n");
+  document.getElementById("veloMail").classList.add("on");
+}
+
+function anteprimaPDF() {
+  const oggi = new Date().toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  document.getElementById("paginaPDF").innerHTML =
+    `<div class="pdf-titolo">PREVENTIVO</div>
+     <div class="pdf-sotto">${titoloPrev().replace("Preventivo i", "I")} · ${oggi}</div>` +
+    vociPrev().map(v => `<div class="pdf-riga"><span>${v.nome}</span><span class="d">${v.dett}</span><span class="num">${euro(v.importo)}</span></div>`).join("") +
+    `<div class="pdf-tot"><span>Totale</span><span>${euro(totale())}</span></div>
+     <div class="pdf-nota">IVA esclusa</div>`;
+  document.getElementById("veloPDF").classList.add("on");
+}
+
+function anteprimaWA() {
   const testo = [
-    `*Preventivo impianto elettrico – ${CASE[stato.tipo]}*`, "",
-    ...stato.stanze.map(s => `• ${s.nome}: ${puntiTxt(punti(s))} – ${euro(costo(s))}`),
-    ...(stato.quadro ? [`• Quadro elettrico: ${euro(PREZZI.quadro)}`] : []),
-    ...(stato.dico ? [`• Dichiarazione di conformità: ${euro(PREZZI.dico)}`] : []), "",
+    `*${titoloPrev()}*`, "",
+    // stesso messaggio di prima: le stanze con i punti, il resto solo con il prezzo
+    ...vociPrev().map(v => v.stanza ? `• ${v.nome}: ${v.dett} – ${euro(v.importo)}` : `• ${v.nome}: ${euro(v.importo)}`), "",
     `*Totale: ${euro(totale())}* (IVA esclusa)`,
   ].join("\n");
   // demo: niente WhatsApp vero, solo l'anteprima del messaggio (*grassetto* come su WhatsApp)
@@ -412,9 +544,53 @@ document.getElementById("whatsapp").addEventListener("click", () => {
   const ora = new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
   document.getElementById("bollaWA").innerHTML = html + '<span class="ora">' + ora + " ✓✓</span>";
   document.getElementById("veloWA").classList.add("on");
-});
+}
 document.getElementById("chiudiWA").addEventListener("click", () => document.getElementById("veloWA").classList.remove("on"));
 document.getElementById("veloWA").addEventListener("click", e => { if (e.target.id === "veloWA") e.currentTarget.classList.remove("on"); });
+
+// ---- Nuovo componente nella stanza aperta ----
+function apriComp() {
+  const s = stato.stanze[aperta];
+  const liberi = CATALOGO.filter(c => !s.extra.includes(c.k));
+  document.getElementById("compSpiega").textContent = `In: ${s.nome}. Il prezzo si cambia da "Prezzi".`;
+  document.getElementById("sceltaComp").innerHTML =
+    liberi.map(c => `<button data-c="${c.k}">${c.nome}${c.nota ? ` <small style="color:var(--sec);font-weight:500">${c.nota}</small>` : ""}</button>`).join("") +
+    `<button class="altro" id="compAltro">+ Altro</button>`;
+  document.getElementById("mano").hidden = true;
+  document.getElementById("nomeMano").value = "";
+  document.getElementById("veloComp").classList.add("on");
+}
+function aggiungiComp(k) {
+  const s = stato.stanze[aperta];
+  s.extra.push(k); s[k] = 1;          // si aggiunge perché ne serve almeno uno
+  stato.toccato = true;
+  document.getElementById("veloComp").classList.remove("on");
+  disegnaS(false);
+  const c = document.querySelector("#schermoS .corpo"); c.scrollTop = c.scrollHeight;
+}
+// componente scritto a mano: entra nel catalogo, così si ritrova anche nelle altre stanze
+let nMano = 0;
+function aggiungiMano() {
+  let nome = document.getElementById("nomeMano").value.replace(/[<>&"']/g, "").trim();
+  nome = nome.charAt(0).toUpperCase() + nome.slice(1);   // "presa usb" → "Presa usb"
+  if (!nome) return document.getElementById("nomeMano").focus();
+  const k = "mano" + (++nMano);
+  const c = { k, nome, uno: nome, sim: "altro", prezzo: 0 };
+  CATALOGO.push(c); COMP[k] = c; PREZZI[k] = 0;
+  aggiungiComp(k);
+  toast(`${nome}: il prezzo si imposta da "Prezzi".`);
+}
+document.getElementById("veloComp").addEventListener("click", e => {
+  const b = e.target.closest("[data-c]");
+  if (b) return aggiungiComp(b.dataset.c);
+  if (e.target.closest("#compAltro")) {
+    document.getElementById("mano").hidden = false;
+    return document.getElementById("nomeMano").focus();
+  }
+  if (e.target.closest("#aggMano")) return aggiungiMano();
+  if (e.target.id === "veloComp") document.getElementById("veloComp").classList.remove("on");
+});
+document.getElementById("nomeMano").addEventListener("keydown", e => { if (e.key === "Enter") aggiungiMano(); });
 
 // ---- Nuova stanza ----
 function apriFoglio() {
