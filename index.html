@@ -103,6 +103,10 @@
   /* fogli dal basso: prezzi, nuova stanza, anteprima WhatsApp */
   .velo { position: fixed; inset: 0; justify-content: center; background: rgba(0,0,0,.55); display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 40; }
   .velo.on { opacity: 1; pointer-events: auto; }
+  /* i fogli tengono lo scorrimento per sé: arrivati in fondo non lo passano alla pagina sotto (bug dal telefono, 16/10) */
+  .velo, .foglio, .finestra, .chat, .mail-corpo, .carta, .lato { overscroll-behavior: contain; }
+  /* mentre un foglio è aperto la pagina è ferma (inchiodata dove era; top lo mette il codice) */
+  body.fermo { position: fixed; left: 0; right: 0; overflow: hidden; }
   .foglio { background: var(--foglio); width: 100%; max-width: 560px; max-height: 92%; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 18px 16px calc(20px + env(safe-area-inset-bottom)); transform: translateY(30px); transition: transform .2s; }
   .velo.on .foglio { transform: none; }
   .foglio h2 { font-family: "Space Grotesk", sans-serif; font-size: 18px; margin-bottom: 4px; }
@@ -872,6 +876,19 @@ function vociPrev() {
   ];
 }
 const chiudiFogli = () => document.querySelectorAll(".velo.on").forEach(v => v.classList.remove("on"));
+// pagina ferma mentre c'è un foglio aperto, e alla chiusura torna dov'era.
+// Guarda tutti i fogli in un punto solo, così vale per ogni foglio (anche quelli aggiunti dopo)
+let scrollFermo = 0;
+new MutationObserver(() => {
+  const aperto = !!document.querySelector(".velo.on"), b = document.body;
+  if (aperto && !b.classList.contains("fermo")) {
+    scrollFermo = window.scrollY;
+    b.style.top = `-${scrollFermo}px`; b.classList.add("fermo");
+  } else if (!aperto && b.classList.contains("fermo")) {
+    b.classList.remove("fermo"); b.style.top = "";
+    window.scrollTo(0, scrollFermo);
+  }
+}).observe(document.body, { subtree: true, attributes: true, attributeFilter: ["class"] });
 document.getElementById("invia").addEventListener("click", () => document.getElementById("veloInvio").classList.add("on"));
 document.querySelectorAll("[data-chiudi]").forEach(b => b.addEventListener("click", chiudiFogli));
 ["veloInvio", "veloMail", "veloPDF"].forEach(id => document.getElementById(id).addEventListener("click", e => { if (e.target.id === id) chiudiFogli(); }));
